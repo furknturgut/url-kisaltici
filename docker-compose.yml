@@ -1,0 +1,46 @@
+services:
+  db:
+    image: postgres:16
+    container_name: url-db
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB}
+    ports:
+      - "127.0.0.1:5432:5432" # db
+    volumes:
+      - db_verisi:/var/lib/postgresql/data
+
+  cache:
+    image: redis:7
+    container_name: url-cache
+    ports:
+      - "127.0.0.1:6379:6379" # cache
+
+  kafka:
+    image: apache/kafka:3.9.0
+    container_name: url-kafka
+    ports:
+      - "127.0.0.1:9092:9092" # kafka
+
+  prometheus:
+    image: prom/prometheus:v3.1.0
+    container_name: url-prometheus
+    ports:
+      - "127.0.0.1:9090:9090" # prometheus    
+    volumes:
+      - ./prometheus.yml:/etc/prometheus/prometheus.yml
+
+  grafana:
+    image: grafana/grafana:11.4.0
+    container_name: url-grafana
+    ports:
+      - "127.0.0.1:3000:3000"
+    environment:
+      GF_SECURITY_ADMIN_USER: ${GRAFANA_ADMIN_USER}
+      GF_SECURITY_ADMIN_PASSWORD: ${GRAFANA_ADMIN_PASSWORD}
+    volumes:
+      - grafana_verisi:/var/lib/grafana
+volumes:
+  db_verisi:
+  grafana_verisi:
